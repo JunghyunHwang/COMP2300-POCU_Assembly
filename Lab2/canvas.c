@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <assert.h>
 
 #include "canvas.h"
@@ -8,7 +9,6 @@
 #define HEIGHT (32)
 #define TRUE (1)
 #define FALSE (0)
-#define NULL (0)
 
 static unsigned char* s_canvas;
 static unsigned char s_xpos = 0;
@@ -69,7 +69,8 @@ void execute(unsigned char instruction)
     case 0b101:
         s_pen_color = s_palette[arg];
         break;
-    case 0b110: {}
+    case 0b110:
+        {}
         unsigned char corner = arg & 0b11;
         unsigned char quad = (arg >> 2) & 0b11;
 
