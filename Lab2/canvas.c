@@ -64,8 +64,7 @@ void execute(unsigned char instruction)
     case 0b101:
         s_pen_color = s_palette[arg];
         break;
-    case 0b110:
-    {
+    case 0b110: {
         unsigned char corner = arg & 0b11;
         unsigned char quad = (arg >> 2) & 0b11;
 
@@ -166,7 +165,7 @@ void execute(unsigned char instruction)
             assert(FALSE);
             break;
         }
-    }
+        }
         break;
     case 0b111:
         if ((arg & 0b10000) > 0) {

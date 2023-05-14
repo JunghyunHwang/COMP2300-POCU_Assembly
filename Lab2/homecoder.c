@@ -391,7 +391,7 @@ static void homecoder_test()
     assert(get_x() == 0 && canvas[x] == color);
 
     // move up
-    for (y = MAX_SIZE - 1; (char) y >= 0; --y) {
+    for (y = MAX_SIZE - 1; (char)y >= 0; --y) {
         execute(GET_INSTRUCTION(0b111, 0b00001));
 
         assert(get_y() == y && canvas[y] == color);
