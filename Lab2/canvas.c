@@ -14,15 +14,13 @@ static unsigned char* s_canvas;
 static unsigned char s_xpos = 0;
 static unsigned char s_ypos = 0;
 
-static unsigned char s_palette_id = 0;
+static const unsigned char* s_palette = NULL;
 static unsigned char s_pen_color_id = 0;
 
 void clear_members()
 {
     s_xpos = 0;
     s_ypos = 0;
-    s_palette_id = 0;
-    s_pen_color_id = 0;
 }
 
 unsigned char get_x()
@@ -44,14 +42,17 @@ void execute(unsigned char instruction)
 {
     unsigned char arg = instruction & 0b11111;
     unsigned char op = (instruction >> 5) & 0b111;
-    const unsigned char* palette = get_palette(s_palette_id);
 
     switch (op) {
     case 0b000:
-        clear(palette[arg]);
+        if (s_palette == NULL) {
+            s_palette = get_palette(0);
+        }
+
+        clear(s_palette[arg]);
         break;
     case 0b001:
-        s_palette_id = arg;
+        s_palette = get_palette(arg);
         break;
     case 0b010:
         s_xpos = arg;
@@ -60,15 +61,13 @@ void execute(unsigned char instruction)
         s_ypos = arg;
         break;
     case 0b100:
-        s_canvas[s_ypos * HEIGHT + s_xpos] = palette[arg];
+        s_canvas[s_ypos * HEIGHT + s_xpos] = s_palette[arg];
         break;
     case 0b101:
         s_pen_color_id = arg;
         break;
     case 0b110:
     {
-
-    }
         unsigned char corner = arg & 0b11;
         unsigned char quad = (arg >> 2) & 0b11;
 
@@ -169,16 +168,17 @@ void execute(unsigned char instruction)
             assert(FALSE);
             break;
         }
+    }
         break;
     case 0b111:
         if ((arg & 0b10000) > 0) {
-            s_canvas[s_ypos * HEIGHT + s_xpos] = palette[s_pen_color_id];
+            s_canvas[s_ypos * HEIGHT + s_xpos] = s_palette[s_pen_color_id];
         }
 
         move_direction(arg & 0b1111);
 
         if ((arg & 0b10000) > 0) {
-            s_canvas[s_ypos * HEIGHT + s_xpos] = palette[s_pen_color_id];
+            s_canvas[s_ypos * HEIGHT + s_xpos] = s_palette[s_pen_color_id];
         }
         break;
     default:
