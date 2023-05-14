@@ -15,7 +15,7 @@ static unsigned char s_xpos = 0;
 static unsigned char s_ypos = 0;
 
 static const unsigned char* s_palette;
-static unsigned char penColor;
+static unsigned char s_pen_color;
 
 void clear_members()
 {
@@ -37,7 +37,7 @@ void set_canvas(unsigned char* canvas32x32)
 {
     s_canvas = canvas32x32;
     s_palette = get_palette(0);
-    penColor = s_palette[0];
+    s_pen_color = s_palette[0];
 }
 
 void execute(unsigned char instruction)
@@ -62,121 +62,121 @@ void execute(unsigned char instruction)
         s_canvas[s_ypos * HEIGHT + s_xpos] = s_palette[arg];
         break;
     case 0b101:
-        penColor = s_palette[arg];
+        s_pen_color = s_palette[arg];
         break;
     case 0b110:
-        {
-            unsigned char corner = arg & 0b11;
-            unsigned char quad = (arg >> 2) & 0b11;
+    {
+        unsigned char corner = arg & 0b11;
+        unsigned char quad = (arg >> 2) & 0b11;
 
-            switch (quad) {
+        switch (quad) {
+        case 0b00:
+            switch (corner) {
             case 0b00:
-                switch (corner) {
-                case 0b00:
-                    s_xpos = 16;
-                    s_ypos = 0;
-                    break;
-                case 0b01:
-                    s_xpos = 16;
-                    s_ypos = 15;
-                    break;
-                case 0b10:
-                    s_xpos = 31;
-                    s_ypos = 0;
-                    break;
-                case 0b11:
-                    s_xpos = 31;
-                    s_ypos = 15;
-                    break;
-                default:
-                    assert(FALSE);
-                    break;
-                }
+                s_xpos = 16;
+                s_ypos = 0;
                 break;
             case 0b01:
-                switch (corner) {
-                case 0b00:
-                    s_xpos = 0;
-                    s_ypos = 0;
-                    break;
-                case 0b01:
-                    s_xpos = 0;
-                    s_ypos = 15;
-                    break;
-                case 0b10:
-                    s_xpos = 15;
-                    s_ypos = 0;
-                    break;
-                case 0b11:
-                    s_xpos = 15;
-                    s_ypos = 15;
-                    break;
-                default:
-                    assert(FALSE);
-                    break;
-            }
-            break;
+                s_xpos = 16;
+                s_ypos = 15;
+                break;
             case 0b10:
-                switch (corner) {
-                case 0b00:
-                    s_xpos = 0;
-                    s_ypos = 16;
-                    break;
-                case 0b01:
-                    s_xpos = 0;
-                    s_ypos = 31;
-                    break;
-                case 0b10:
-                    s_xpos = 15;
-                    s_ypos = 16;
-                    break;
-                case 0b11:
-                    s_xpos = 15;
-                    s_ypos = 31;
-                    break;
-                default:
-                    assert(FALSE);
-                    break;
-                }
+                s_xpos = 31;
+                s_ypos = 0;
                 break;
             case 0b11:
-                switch (corner) {
-                case 0b00:
-                    s_xpos = 16;
-                    s_ypos = 16;
-                    break;
-                case 0b01:
-                    s_xpos = 16;
-                    s_ypos = 31;
-                    break;
-                case 0b10:
-                    s_xpos = 31;
-                    s_ypos = 16;
-                    break;
-                case 0b11:
-                    s_xpos = 31;
-                    s_ypos = 31;
-                    break;
-                default:
-                    assert(FALSE);
-                    break;
-                }
+                s_xpos = 31;
+                s_ypos = 15;
                 break;
             default:
                 assert(FALSE);
                 break;
             }
+            break;
+        case 0b01:
+            switch (corner) {
+            case 0b00:
+                s_xpos = 0;
+                s_ypos = 0;
+                break;
+            case 0b01:
+                s_xpos = 0;
+                s_ypos = 15;
+                break;
+            case 0b10:
+                s_xpos = 15;
+                s_ypos = 0;
+                break;
+            case 0b11:
+                s_xpos = 15;
+                s_ypos = 15;
+                break;
+            default:
+                assert(FALSE);
+                break;
+            }
+            break;
+        case 0b10:
+            switch (corner) {
+            case 0b00:
+                s_xpos = 0;
+                s_ypos = 16;
+                break;
+            case 0b01:
+                s_xpos = 0;
+                s_ypos = 31;
+                break;
+            case 0b10:
+                s_xpos = 15;
+                s_ypos = 16;
+                break;
+            case 0b11:
+                s_xpos = 15;
+                s_ypos = 31;
+                break;
+            default:
+                assert(FALSE);
+                break;
+            }
+            break;
+        case 0b11:
+            switch (corner) {
+            case 0b00:
+                s_xpos = 16;
+                s_ypos = 16;
+                break;
+            case 0b01:
+                s_xpos = 16;
+                s_ypos = 31;
+                break;
+            case 0b10:
+                s_xpos = 31;
+                s_ypos = 16;
+                break;
+            case 0b11:
+                s_xpos = 31;
+                s_ypos = 31;
+                break;
+            default:
+                assert(FALSE);
+                break;
+            }
+            break;
+        default:
+            assert(FALSE);
+            break;
         }
+    }
         break;
     case 0b111:
         if ((arg & 0b10000) > 0) {
-            s_canvas[s_ypos * HEIGHT + s_xpos] = penColor;
+            s_canvas[s_ypos * HEIGHT + s_xpos] = s_pen_color;
         }
 
         move_direction(arg & 0b1111);
 
         if ((arg & 0b10000) > 0) {
-            s_canvas[s_ypos * HEIGHT + s_xpos] = penColor;
+            s_canvas[s_ypos * HEIGHT + s_xpos] = s_pen_color;
         }
         break;
     default:
@@ -282,6 +282,9 @@ void move_direction(unsigned char direction)
         } else {
             s_ypos = 0;
         }
+        break;
+    default:
+        assert(FALSE);
         break;
     }
 }

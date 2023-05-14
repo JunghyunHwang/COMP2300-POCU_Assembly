@@ -25,8 +25,7 @@ static void homecoder_test()
     unsigned char palette_index;
     unsigned char color_index;
 
-    for (palette_index = 0; palette_index < MAX_SIZE; ++palette_index)
-    {
+    for (palette_index = 0; palette_index < MAX_SIZE; ++palette_index) {
 
         const unsigned char* palette = get_palette(palette_index);
 
@@ -40,8 +39,7 @@ static void homecoder_test()
             int j = 0;
             for (; i < MAX_SIZE; ++i) {
                 j = 0;
-                for (; j < MAX_SIZE; ++j)
-                {
+                for (; j < MAX_SIZE; ++j) {
                     assert(canvas[j * MAX_SIZE + i] == color);
                 }
             }
@@ -375,8 +373,7 @@ static void homecoder_test()
     execute(GET_INSTRUCTION(0b111, 0b00000));
     assert(get_x() == 0 && canvas[x] == color);
 
-    for (y = 0; y < MAX_SIZE; ++y)
-    {
+    for (y = 0; y < MAX_SIZE; ++y) {
         execute(GET_INSTRUCTION(0b111, 0b00000));
 
         assert(get_y() == 0 && canvas[y] == color);
@@ -385,8 +382,7 @@ static void homecoder_test()
     assert(get_x() == 0 && canvas[y] == color);
 
     // move right
-    for (x = 1; x < MAX_SIZE; ++x)
-    {
+    for (x = 1; x < MAX_SIZE; ++x) {
         execute(GET_INSTRUCTION(0b111, 0b00100));
 
         assert(get_x() == x && canvas[x] == color);
@@ -395,24 +391,21 @@ static void homecoder_test()
     assert(get_x() == 0 && canvas[x] == color);
 
     // move up
-    for (y = MAX_SIZE - 1; (char) y >= 0; --y)
-    {
+    for (y = MAX_SIZE - 1; (char) y >= 0; --y) {
         execute(GET_INSTRUCTION(0b111, 0b00001));
 
         assert(get_y() == y && canvas[y] == color);
     }
 
     // move left
-    for (x = MAX_SIZE - 1; (char)x >= 0; --x)
-    {
+    for (x = MAX_SIZE - 1; (char)x >= 0; --x) {
         execute(GET_INSTRUCTION(0b111, 0b01000));
 
         assert(get_x() == x && canvas[x] == color);
     }
 
     //move down
-    for (y = 1; y < MAX_SIZE; ++y)
-    {
+    for (y = 1; y < MAX_SIZE; ++y) {
         execute(GET_INSTRUCTION(0b111, 0b00010));
 
         assert(get_y() == y && canvas[y] == color);
