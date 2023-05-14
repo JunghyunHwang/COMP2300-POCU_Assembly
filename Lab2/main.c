@@ -3,6 +3,7 @@
 
 #include "canvas.h"
 #include "palette.h"
+#include "homecoder.c"
 
 #define MAX_SIZE (32)
 
@@ -85,6 +86,8 @@ int main(void)
 
     assert(canvas[y * MAX_SIZE + x] == color);
     assert(canvas[(y + 1) * MAX_SIZE + (x + 1) == color]);
+
+    homecoder_test();
 
     return 0;
 }

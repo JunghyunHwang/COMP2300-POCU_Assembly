@@ -8,6 +8,7 @@
 #define HEIGHT (32)
 #define TRUE (1)
 #define FALSE (0)
+#define NULL (0)
 
 static unsigned char* s_canvas;
 static unsigned char s_xpos = 0;
@@ -15,6 +16,22 @@ static unsigned char s_ypos = 0;
 
 static const unsigned char* s_palette;
 static unsigned char penColor;
+
+void clear_members()
+{
+    s_xpos = 0;
+    s_ypos = 0;
+}
+
+unsigned char get_x()
+{
+    return s_xpos;
+}
+
+unsigned char get_y()
+{
+    return s_ypos;
+}
 
 void set_canvas(unsigned char* canvas32x32)
 {
