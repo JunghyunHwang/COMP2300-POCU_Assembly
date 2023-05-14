@@ -196,100 +196,100 @@ void setxy(unsigned char arg)
     unsigned char quad = (arg >> 2) & 0b11;
 
     switch (quad) {
+    case 0b00:
+        switch (corner) {
         case 0b00:
-            switch (corner) {
-            case 0b00:
-                s_xpos = 16;
-                s_ypos = 0;
-                break;
-            case 0b01:
-                s_xpos = 16;
-                s_ypos = 15;
-                break;
-            case 0b10:
-                s_xpos = 31;
-                s_ypos = 0;
-                break;
-            case 0b11:
-                s_xpos = 31;
-                s_ypos = 15;
-                break;
-            default:
-                assert(FALSE);
-                break;
-            }
+            s_xpos = 16;
+            s_ypos = 0;
             break;
         case 0b01:
-            switch (corner) {
-            case 0b00:
-                s_xpos = 0;
-                s_ypos = 0;
-                break;
-            case 0b01:
-                s_xpos = 0;
-                s_ypos = 15;
-                break;
-            case 0b10:
-                s_xpos = 15;
-                s_ypos = 0;
-                break;
-            case 0b11:
-                s_xpos = 15;
-                s_ypos = 15;
-                break;
-            default:
-                assert(FALSE);
-                break;
-            }
+            s_xpos = 16;
+            s_ypos = 15;
             break;
         case 0b10:
-            switch (corner) {
-            case 0b00:
-                s_xpos = 0;
-                s_ypos = 16;
-                break;
-            case 0b01:
-                s_xpos = 0;
-                s_ypos = 31;
-                break;
-            case 0b10:
-                s_xpos = 15;
-                s_ypos = 16;
-                break;
-            case 0b11:
-                s_xpos = 15;
-                s_ypos = 31;
-                break;
-            default:
-                assert(FALSE);
-                break;
-            }
+            s_xpos = 31;
+            s_ypos = 0;
             break;
         case 0b11:
-            switch (corner) {
-            case 0b00:
-                s_xpos = 16;
-                s_ypos = 16;
-                break;
-            case 0b01:
-                s_xpos = 16;
-                s_ypos = 31;
-                break;
-            case 0b10:
-                s_xpos = 31;
-                s_ypos = 16;
-                break;
-            case 0b11:
-                s_xpos = 31;
-                s_ypos = 31;
-                break;
-            default:
-                assert(FALSE);
-                break;
-            }
+            s_xpos = 31;
+            s_ypos = 15;
             break;
         default:
             assert(FALSE);
             break;
         }
+        break;
+    case 0b01:
+        switch (corner) {
+        case 0b00:
+            s_xpos = 0;
+            s_ypos = 0;
+            break;
+        case 0b01:
+            s_xpos = 0;
+            s_ypos = 15;
+            break;
+        case 0b10:
+            s_xpos = 15;
+            s_ypos = 0;
+            break;
+        case 0b11:
+            s_xpos = 15;
+            s_ypos = 15;
+            break;
+        default:
+            assert(FALSE);
+            break;
+        }
+        break;
+    case 0b10:
+        switch (corner) {
+        case 0b00:
+            s_xpos = 0;
+            s_ypos = 16;
+            break;
+        case 0b01:
+            s_xpos = 0;
+            s_ypos = 31;
+            break;
+        case 0b10:
+            s_xpos = 15;
+            s_ypos = 16;
+            break;
+        case 0b11:
+            s_xpos = 15;
+            s_ypos = 31;
+            break;
+        default:
+            assert(FALSE);
+            break;
+        }
+        break;
+    case 0b11:
+        switch (corner) {
+        case 0b00:
+            s_xpos = 16;
+            s_ypos = 16;
+            break;
+        case 0b01:
+            s_xpos = 16;
+            s_ypos = 31;
+            break;
+        case 0b10:
+            s_xpos = 31;
+            s_ypos = 16;
+            break;
+        case 0b11:
+            s_xpos = 31;
+            s_ypos = 31;
+            break;
+        default:
+            assert(FALSE);
+            break;
+        }
+        break;
+    default:
+        assert(FALSE);
+        break;
+    }
 }
