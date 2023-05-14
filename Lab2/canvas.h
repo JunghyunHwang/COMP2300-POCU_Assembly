@@ -15,4 +15,6 @@ unsigned char get_x();
 
 unsigned char get_y();
 
+void setxy(unsigned char arg);
+
 #endif /* CANVAS_H */
