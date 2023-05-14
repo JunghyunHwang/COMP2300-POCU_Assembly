@@ -25,37 +25,142 @@ void set_canvas(unsigned char* canvas32x32)
 
 void execute(unsigned char instruction)
 {
-	unsigned char arg = instruction & 0x11111;
-	unsigned char op = (instruction >> 5) & 0x111;
+	unsigned char arg = instruction & 0b11111;
+	unsigned char op = (instruction >> 5) & 0b111;
 
 	switch (op) {
-	case 0x000:
-		clear(arg);
+	case 0b000:
+		clear(s_palette[arg]);
 		break;
-	case 0x001:
+	case 0b001:
 		s_palette = get_palette(arg);
 		break;
-	case 0x010:
+	case 0b010:
 		s_xpos = arg;
 		break;
-	case 0x011:
+	case 0b011:
 		s_ypos = arg;
 		break;
-	case 0x100:
-		s_canvas[s_ypos + HEIGHT * s_xpos] = s_palette[arg];
+	case 0b100:
+		s_canvas[s_ypos * HEIGHT + s_xpos] = s_palette[arg];
 		break;
-	case 0x101:
+	case 0b101:
 		penColor = s_palette[arg];
 		break;
-	case 0x110:
-		// setxy
+	case 0b110:
+		{
+			unsigned char corner = arg & 0b11;
+			unsigned char quad = (arg >> 2) & 0b11;
+
+			switch (quad) {
+				case 0b00:
+					switch (corner) {
+						case 0b00:
+							s_xpos = 16;
+							s_ypos = 0;
+							break;
+						case 0b01:
+							s_xpos = 16;
+							s_ypos = 15;
+							break;
+						case 0b10:
+							s_xpos = 31;
+							s_ypos = 0;
+							break;
+						case 0b11:
+							s_xpos = 31;
+							s_ypos = 15;
+							break;
+						default:
+							assert(FALSE);
+							break;
+					}
+					break;
+				case 0b01:
+					switch (corner) {
+						case 0b00:
+							s_xpos = 0;
+							s_ypos = 0;
+							break;
+						case 0b01:
+							s_xpos = 0;
+							s_ypos = 15;
+							break;
+						case 0b10:
+							s_xpos = 15;
+							s_ypos = 0;
+							break;
+						case 0b11:
+							s_xpos = 15;
+							s_ypos = 15;
+							break;
+						default:
+							assert(FALSE);
+							break;
+					}
+					break;
+				case 0b10:
+					switch (corner) {
+						case 0b00:
+							s_xpos = 0;
+							s_ypos = 16;
+							break;
+						case 0b01:
+							s_xpos = 0;
+							s_ypos = 31;
+							break;
+						case 0b10:
+							s_xpos = 15;
+							s_ypos = 16;
+							break;
+						case 0b11:
+							s_xpos = 15;
+							s_ypos = 31;
+							break;
+						default:
+							assert(FALSE);
+							break;
+					}
+					break;
+				case 0b11:
+					switch (corner) {
+						case 0b00:
+							s_xpos = 16;
+							s_ypos = 16;
+							break;
+						case 0b01:
+							s_xpos = 16;
+							s_ypos = 31;
+							break;
+						case 0b10:
+							s_xpos = 31;
+							s_ypos = 16;
+							break;
+						case 0b11:
+							s_xpos = 31;
+							s_ypos = 31;
+							break;
+						default:
+							assert(FALSE);
+							break;
+					}
+					break;
+				default:
+					assert(FALSE);
+					break;
+			}
+		}
 		break;
-	case 0x111:
-		if (arg & 0x10000 > 0) {
-			s_canvas[s_ypos + HEIGHT * s_xpos] = penColor;
+	case 0b111:
+		if ((arg & 0b10000) > 0) {
+			s_canvas[s_ypos * HEIGHT + s_xpos] = penColor;
 		}
 
-		move_direction(arg & 0x1111);
+		move_direction(arg & 0b1111);
+
+		if ((arg & 0b10000) > 0) {
+			s_canvas[s_ypos * HEIGHT + s_xpos] = penColor;
+		}
 		break;
 	default:
 		assert(FALSE);
@@ -65,8 +170,12 @@ void execute(unsigned char instruction)
 
 void clear(unsigned char color)
 {
-	for (int i = 0; i < HEIGHT; ++i) {
-		for (int j = 0; j < WIDTH; ++j) {
+	int i = 0;
+	int j = 0;
+	
+	for (; i < HEIGHT; ++i) {
+		j = 0;
+		for (; j < WIDTH; ++j) {
 			s_canvas[HEIGHT * i + j] = color;
 		}
 	}
@@ -75,76 +184,86 @@ void clear(unsigned char color)
 void move_direction(unsigned char direction)
 {
 	switch (direction) {
-	case 0x0000:
+	case 0b0000:
 		break;
-	case 0x0001:
+	case 0b0001:
 		if (s_ypos > 0) {
 			--s_ypos;
+		} else {
+			s_ypos = 0b11111;
 		}
-
 		break;
-	case 0x0010:
+	case 0b0010:
 		if (s_ypos < HEIGHT - 1) {
 			++s_ypos;
+		} else {
+			s_ypos = 0;
 		}
-
 		break;
-	case 0x0100:
+	case 0b0100:
 		if (s_xpos < WIDTH - 1) {
 			++s_xpos;
+		} else {
+			s_xpos = 0;
 		}
-
 		break;
-	case 0x1000:
+	case 0b1000:
 		if (s_xpos > 0) {
 			--s_xpos;
+		} else {
+			s_xpos = 0b11111;
 		}
-
 		break;
-	case 0x0101:
-		// ++x
-		// --y
+	case 0b0101:
 		if (s_xpos < WIDTH - 1) {
 			++s_xpos;
-		}
-
-		if (s_ypos > 0) {
-			--s_ypos;
-		}
-
-		break;
-	case 0x0110:
-		// ++x
-		// ++y
-		if (s_xpos < WIDTH - 1) {
-			++s_xpos;
-		}
-
-		if (s_ypos < HEIGHT - 1) {
-			++s_ypos;
-		}
-		break;
-	case 0x1001:
-		// --x
-		// --y
-		if (s_xpos > 0) {
-			--s_xpos;
+		} else {
+			s_xpos = 0;
 		}
 
 		if (s_ypos > 0) {
 			--s_ypos;
+		} else {
+			s_ypos = 0b11111;
 		}
-
 		break;
-	case 0x1010:
-		// --x
-		// ++y
-		if (s_xpos > 0) {
-			--s_xpos;
+	case 0b0110:
+		if (s_xpos < WIDTH - 1) {
+			++s_xpos;
+		} else {
+			s_xpos = 0;
 		}
 
 		if (s_ypos < HEIGHT - 1) {
 			++s_ypos;
+		} else {
+			s_ypos = 0;
+		}
+		break;
+	case 0b1001:
+		if (s_xpos > 0) {
+			--s_xpos;
+		} else {
+			s_xpos = 0b11111;
+		}
+
+		if (s_ypos > 0) {
+			--s_ypos;
+		} else {
+			s_ypos = 0b11111;
+		}
+		break;
+	case 0b1010:
+		if (s_xpos > 0) {
+			--s_xpos;
+		} else {
+			s_xpos = 0b11111;
+		}
+
+		if (s_ypos < HEIGHT - 1) {
+			++s_ypos;
+		} else {
+			s_ypos = 0;
 		}
 		break;
 	}

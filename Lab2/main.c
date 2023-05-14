@@ -1,8 +1,8 @@
-#include "canvas.h"
-#include "palette.h"
-
 #include <assert.h>
 #include <stdio.h>
+
+#include "canvas.h"
+#include "palette.h"
 
 #define MAX_SIZE (32)
 
@@ -22,9 +22,12 @@ int main(void)
 
     execute(GET_INSTRUCTION(0b000, color_index));
 
-    for (int i = 0; i < MAX_SIZE; ++i)
+    int i = 0;
+    int j = 0;
+
+    for (; i < MAX_SIZE; ++i)
     {
-        for (int j = 0; j < MAX_SIZE; ++j)
+        for (; j < MAX_SIZE; ++j)
         {
             assert(canvas[j * MAX_SIZE + i] == color);
         }

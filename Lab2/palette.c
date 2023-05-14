@@ -1,6 +1,6 @@
-#include "palette.h"
-
 #include <assert.h>
+
+#include "palette.h"
 
 #define PALETTE_SIZE (32)
 

@@ -5,4 +5,8 @@ void set_canvas(unsigned char* canvas32x32);
 
 void execute(unsigned char instruction);
 
+void clear(unsigned char color);
+
+void move_direction(unsigned char direction);
+
 #endif /* CANVAS_H */
