@@ -14,7 +14,7 @@ static unsigned char* s_canvas;
 static unsigned char s_xpos = 0;
 static unsigned char s_ypos = 0;
 
-static const unsigned char* s_palette;
+static const unsigned char* s_palette = NULL;
 static unsigned char s_pen_color;
 
 void clear_members()
@@ -42,6 +42,11 @@ void set_canvas(unsigned char* canvas32x32)
 
 void execute(unsigned char instruction)
 {
+    if (s_palette == NULL) {
+        s_palette = get_palette(0);
+        s_pen_color = s_palette[0];
+    }
+
     unsigned char arg = instruction & 0b11111;
     unsigned char op = (instruction >> 5) & 0b111;
 
@@ -165,7 +170,7 @@ void execute(unsigned char instruction)
             assert(FALSE);
             break;
         }
-        }
+    }
         break;
     case 0b111:
         if ((arg & 0b10000) > 0) {
