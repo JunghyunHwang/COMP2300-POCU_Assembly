@@ -5,7 +5,8 @@ static const char* mnemonics[256] = { "brk i", "ora (zp,x)", "", "", "", "ora zp
 
 const unsigned char* disassemble(char* out_buffer64, const unsigned char* mem)
 {
-    const char* mnemonic = mnemonics[mem[0]];
+    unsigned char mnemonicNum = mem[0];
+    const char* mnemonic = mnemonics[mnemonicNum];
 
     if (mnemonic[4] == 'A' || mnemonic[4] == 'i') {
         char high_bit[3];
@@ -19,20 +20,20 @@ const unsigned char* disassemble(char* out_buffer64, const unsigned char* mem)
         low_bit[1] = '.';
         low_bit[2] = '\0';
 
-        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=%s %s", mem[0], mnemonic, high_bit, low_bit);
+        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=%s %s", mnemonicNum, mnemonic, high_bit, low_bit);
 
         ++mem;
     } else if (mnemonic[4] == 'a' || mnemonic[5] == 'a') {
         unsigned char low_bit = *++mem;
         unsigned char high_bit = *++mem;
 
-        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=%02X %02X", mem[0], mnemonic, high_bit, low_bit);
+        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=%02X %02X", mnemonicNum, mnemonic, high_bit, low_bit);
 
         ++mem;
     } else {
         unsigned char low_bit = *++mem;
 
-        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=.. %02X", mem[0], mnemonic, low_bit);
+        sprintf(out_buffer64, "OPCODE=%02X[%s] OPERAND=.. %02X", mnemonicNum, mnemonic, low_bit);
 
         ++mem;
     }
