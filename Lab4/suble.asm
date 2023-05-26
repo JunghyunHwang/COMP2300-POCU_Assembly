@@ -4,7 +4,7 @@ out=$2300
     ldx #$FF
     txs
 
-    clc
+    sec
     lda ina
     sbc inb
     sta out
