@@ -3,11 +3,6 @@ inb=$4004
 out=$2300
 
     clc
-    lda #$0A
-    sta ina
-    lda #$06
-    sta inb
-
     lda ina
     adc inb
     sta out
