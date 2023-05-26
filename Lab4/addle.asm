@@ -1,6 +1,8 @@
 ina=$4000
 inb=$4004
 out=$2300
+    ldx #$FF
+    txs
 
     clc
     lda ina
