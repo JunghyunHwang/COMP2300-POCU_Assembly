@@ -1,6 +1,24 @@
     .PROCESSOR 6502
     .ORG $8000
 
+    .INCLUDE "utils/utils.asm"
+
+    ;===DEFINE INPUT HERE===
+    lda #$7D
+    adc #$06
+    ;========================
+
+    .INCLUDE "flags.asm"
+
+    ;===DEFINE ASSERTIONS HERE===
+    assert $2300, $01
+    assert $2302, $00
+    assert $2303, $00
+    assert $2301, $01
+    ;============================
+
+    termin
+
 end:
 	jmp end
 
