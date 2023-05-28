@@ -6,11 +6,12 @@ out=$2303
     txs
 
     lda in
-    php
+    and #masknegative
+    tax
+    lda in
     ror
     sta out
-    pla
-    and #masknegative
+    txa
     ora out
     sta out
 
