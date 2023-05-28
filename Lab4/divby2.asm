@@ -1,4 +1,3 @@
-masknegative=%10000000
 in=$4003
 out=$2303
 
@@ -6,7 +5,6 @@ out=$2303
     txs
 
     lda in
-    and #masknegative
     rol
 
     lda in
