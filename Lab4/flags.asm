@@ -20,21 +20,15 @@ temp=$0020
 
     lda temp
     and #maskover
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
+    clc
+    rol
+    rol
+    rol
     sta out-2
 
     lda temp
     and #masknegative
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
+    clc
+    rol
+    rol
     sta out-3
