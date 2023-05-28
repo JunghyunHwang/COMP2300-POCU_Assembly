@@ -6,12 +6,11 @@ out=$2303
     txs
 
     lda in
-    and #masknegative
-    tax
-    lda in
     ror
     sta out
-    txa
+
+    lda in
+    and #masknegative
     ora out
     sta out
 
