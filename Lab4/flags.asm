@@ -2,7 +2,7 @@ maskcarry=%00000001
 maskzero=%00000010
 maskover=%01000000
 masknegative=%10000000
-out=$2300
+out=$2303
 temp=$0020
 
     php
@@ -16,7 +16,7 @@ temp=$0020
     lda temp
     and #maskzero
     lsr
-    sta out+1
+    sta out-1
 
     lda temp
     and #maskover
@@ -26,7 +26,7 @@ temp=$0020
     lsr
     lsr
     lsr
-    sta out+2
+    sta out-2
 
     lda temp
     and #masknegative
@@ -37,4 +37,4 @@ temp=$0020
     lsr
     lsr
     lsr
-    sta out+3
+    sta out-3
