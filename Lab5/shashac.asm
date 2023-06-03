@@ -66,24 +66,23 @@ check:
     bne end
 
 continue:
-    asl temp_out
-    rol temp_out+1
-    rol temp_out+2
-    rol temp_out+3
-
     lda temp_out
+    asl
     ora #1
     sta temp_out
 
     lda temp_out+1
+    rol
     ora #1
     sta temp_out+1
 
     lda temp_out+2
+    rol
     ora #1
     sta temp_out+2
 
     lda temp_out+3
+    rol
     ora #1
     sta temp_out+3
 
