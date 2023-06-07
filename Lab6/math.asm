@@ -13,25 +13,23 @@ min:
     .SUBROUTINE
     sta regtmp
     stx regtmp+1
-    sty regtmp+2
 
     tsx
 
     lda PG1+3,x
     cmp PG1+4,x
-    bcs .left_min
+    bcs .a_not_min
 
     sta ret_min
     jmp .restore
 
-.left_min:
+.a_not_min:
     lda PG1+4,x
     sta ret_min
 
 .restore:
     lda regtmp
     ldx regtmp+1
-    ldy regtmp+2
 
     rts
 
@@ -41,7 +39,6 @@ min:
 max:
     .SUBROUTINE
     sta regtmp
-    sty regtmp+2
 
     ldx inaddr
     cpx inaddr+1
@@ -52,7 +49,6 @@ max:
 
 .restore
     lda regtmp
-    ldy regtmp+2
 
     rts
 
@@ -63,7 +59,6 @@ minmax:
     .SUBROUTINE
     sta regtmp
     stx regtmp+1
-    sty regtmp+2
     
     pla
     sta retaddr
@@ -102,7 +97,6 @@ minmax:
 
     lda regtmp
     ldx regtmp+1
-    ldy regtmp+2
 
     rts
 
@@ -114,7 +108,6 @@ mmref:
 
     sta regtmp
     stx regtmp+1
-    sty regtmp+2
 
     pla
     sta retaddr
@@ -161,6 +154,5 @@ mmref:
 
     lda regtmp
     ldx regtmp+1
-    ldy regtmp+2
 
     rts
