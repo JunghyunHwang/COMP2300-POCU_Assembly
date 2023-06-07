@@ -1,9 +1,10 @@
 ret_min=$20
 PG1=$0100
 regtmp=$00
-rettmp=regtmp+3
-tmp=regtmp+5
-in_maxaddr=$0010
+retaddr=regtmp+3
+vtmp=retaddr+2
+outaddr=vtmp+2
+inaddr=$0010
 
 ;========================;
 ;==========min===========;
@@ -42,12 +43,12 @@ max:
     sta regtmp
     sty regtmp+2
 
-    ldx in_maxaddr
-    cpx in_maxaddr+1
+    ldx inaddr
+    cpx inaddr+1
     bcs .restore
 
 .right_max
-    ldx in_maxaddr+1
+    ldx inaddr+1
 
 .restore
     lda regtmp
@@ -56,7 +57,7 @@ max:
     rts
 
 ;========================;
-;==========minmax========;
+;=========minmax=========;
 ;========================;
 minmax:
     .SUBROUTINE
@@ -65,38 +66,97 @@ minmax:
     sty regtmp+2
     
     pla
-    sta rettmp+1
+    sta retaddr
     pla
-    sta rettmp
+    sta retaddr+1
 
     pla
-    sta tmp
+    sta vtmp
     pla
-    sta tmp+1
+    sta vtmp+1
     pla
     pla
 
-    lda tmp
-    cmp tmp+1
+    lda vtmp
+    cmp vtmp+1
     bcc .a_not_max
 
     pha
-    lda tmp+1
+    lda vtmp+1
     pha
     jmp .restore
 
 .a_not_max
     tax
-    lda tmp+1
+    lda vtmp+1
     pha
 
     txa
     pha
 
 .restore
-    lda rettmp
+    lda retaddr+1
     pha
-    lda rettmp+1
+    lda retaddr
+    pha
+
+    lda regtmp
+    ldx regtmp+1
+    ldy regtmp+2
+
+    rts
+
+;========================;
+;==========mmref=========;
+;========================;
+mmref:
+    .SUBROUTINE
+
+    sta regtmp
+    stx regtmp+1
+    sty regtmp+2
+
+    pla
+    sta retaddr
+    pla
+    sta retaddr+1
+
+    pla
+    sta vtmp
+
+    pla
+    sta outaddr
+    pla
+    sta outaddr+1
+    pla
+    sta outaddr+2
+    pla
+    sta outaddr+3
+
+    lda inaddr
+    cmp vtmp
+    bcc .a_not_max
+
+    ldx #2
+    sta (outaddr,x)
+
+    ldx #0
+    lda vtmp
+    sta (outaddr,x)
+    jmp .restore
+
+.a_not_max
+    ldx #0
+    sta (outaddr,x)
+
+    ldx #2
+    lda vtmp
+    sta (outaddr,x)
+
+.restore
+    lda retaddr+1
+    pha
+    lda retaddr
     pha
 
     lda regtmp
