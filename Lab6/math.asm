@@ -59,46 +59,39 @@ minmax:
     .SUBROUTINE
     sta regtmp
     stx regtmp+1
-    
+
     pla
     sta retaddr
     pla
     sta retaddr+1
+    
+    tsx
 
-    pla
-    sta vtmp
-    pla
-    sta vtmp+1
-    pla
-    pla
-
-    lda vtmp
-    cmp vtmp+1
+    lda PG1+1,x
+    cmp PG1+2,x
     bcc .a_not_max
 
-    pha
-    lda vtmp+1
-    pha
+    sta PG1+4,x
+
+    lda PG1+2,x
+    sta PG1+3,x
     jmp .restore
 
 .a_not_max
-    tax
-    lda vtmp+1
-    pha
-
-    txa
-    pha
+    sta PG1+3,x
+    
+    lda PG1+2,x
+    sta PG1+4,x
 
 .restore
-    lda retaddr+1
-    pha
-    lda retaddr
-    pha
+    inx
+    inx
+    txs
 
     lda regtmp
     ldx regtmp+1
-
-    rts
+    
+    jmp (retaddr)
 
 ;========================;
 ;==========mmref=========;
