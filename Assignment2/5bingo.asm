@@ -3,22 +3,21 @@ called_num=$00
 
 callnum:
     .SUBROUTINE
+
+    lda called_num
     ldx #LEN-1
 
 loop:
-    lda table,x
-    cmp called_num
-    beq .ret
+    cmp table,x
+    beq .set_bit
     
     dex
-    bne loop
+    bpl loop
 
-    lda table,x
-    cmp called_num
-    beq .ret
     rts
 
-.ret:
+.set_bit:
     ora #MASK_CALLED
     sta table,x
+
     rts
