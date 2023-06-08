@@ -8,6 +8,7 @@
 *.dSYM/
 main
 *.bin
+*.bat
 
 # User-specific files
 *.suo
