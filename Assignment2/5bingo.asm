@@ -2,6 +2,8 @@ MARK_CALLED=%10000000
 callednum=$00
 vret=$01
 vtmp=$10
+LEN=25
+table=$80
 
 ;=================
 ;====callednum====
