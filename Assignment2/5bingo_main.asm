@@ -19,18 +19,6 @@ table=$80
     bpl .loop
     ;=============================
 
-    lda #$19
-    sta $00
-    jsr callnum
-
-    lda #$01
-    sta $00
-    jsr callnum
-
-    lda #$20
-    sta $00
-    jsr callnum
-
     lda #$12
     sta $00
     jsr callnum
@@ -42,6 +30,8 @@ table=$80
     jsr callnum
 
     assert $0092, $93
+
+    jsr won
 
     assert $0001, $00
 
@@ -56,6 +46,10 @@ table=$80
     lda #$14
     sta $00
     jsr callnum
+
+    jsr won
+
+    assert $0001, $01
 
     termin
     
