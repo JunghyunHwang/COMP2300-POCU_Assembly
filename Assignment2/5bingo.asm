@@ -43,10 +43,10 @@ won:
     dey
     beq .bingo
 
-    inx
-    inx
-    inx
-    inx
+    txa
+    clc
+    adc #4
+    tax
 
     lda table,x
     bmi .rl_loop
@@ -116,9 +116,6 @@ won:
 .set_y:
     ldy #5
 .h_loop:
-    txa
-    bmi .ret
-
     lda table,x
     bpl .dec_x
     
@@ -138,7 +135,7 @@ won:
     sbc vtmp
     tax
     
-    jmp .set_y
+    bpl .set_y
 
 .ret
     lda #0
