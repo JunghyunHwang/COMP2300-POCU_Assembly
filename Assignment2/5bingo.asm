@@ -61,12 +61,10 @@ won:
     dey
     beq .bingo
 
-    inx
-    inx
-    inx
-    inx
-    inx
-    inx
+    txa
+    clc
+    adc #6
+    tax
 
     lda table,x
     bmi .lr_loop
@@ -100,11 +98,11 @@ won:
 .chk_bingo:
     dey
     beq .bingo
-    inx
-    inx
-    inx
-    inx
-    inx
+
+    txa
+    clc
+    adc #5
+    tax
     
     lda table,x
     bmi .chk_bingo
@@ -133,10 +131,14 @@ won:
     rts
 
 .dec_x:
-    dex
-    dey
-    bne .dec_x
-    beq .set_y
+    sty vtmp
+
+    txa
+    sec
+    sbc vtmp
+    tax
+    
+    jmp .set_y
 
 .ret
     lda #0
