@@ -78,17 +78,15 @@ won:
 
 ;=====vertical=====
 .vertical
-    ldx #5
-    stx vtmp
+    ldy #4
 
 .set
-    ldx vtmp
-    dex
+    tya
     bmi .horizontal
-    stx vtmp
 
-    ldy #5
-    
+    tax
+    dey
+
 .v_loop
     lda table,x
     bmi .chk_bingo
@@ -96,15 +94,15 @@ won:
     jmp .set
 
 .chk_bingo:
-    dey
-    beq .bingo
-
     txa
     clc
     adc #5
     tax
+
+    cpx #LEN-1
+    bpl .bingo
     
-    lda table,x
+    lda table,x 
     bmi .chk_bingo
 
     jmp .set
