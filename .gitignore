@@ -9,6 +9,9 @@
 main
 *.bin
 *.bat
+*.COM
+*.CV4
+*.STS
 
 # User-specific files
 *.suo
