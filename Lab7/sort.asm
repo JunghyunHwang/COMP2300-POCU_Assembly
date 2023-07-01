@@ -18,8 +18,9 @@ str_len DW ?
 
     mov bx, str_buf
 
-    mov al, [bx+1]
-    mov str_len, ax
+    mov cl, [bx+1]
+    jcxz display
+    mov str_len, cx
     mov cx, 0
 
 loop_sort:
@@ -43,6 +44,7 @@ next:
     cmp str_len, cx
     jnz loop_sort
 
+display:
     mov al, '$'
     mov si, str_len
     mov BYTE PTR [bx+2+si], al
