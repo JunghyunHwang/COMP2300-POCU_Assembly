@@ -7,7 +7,6 @@ TITLE Sort
 
 .DATA
 buffer DB 255 DUP (?)
-str_len DW ?
 
 .CODE
 .STARTUP
@@ -16,17 +15,15 @@ str_len DW ?
     call read_string
     add sp, 2
 
-    mov bx, OFFSET buffer
-
     mov cl, [bx+1]
     jcxz display
-    mov str_len, cx
+    mov dx, cx
     mov cx, 0
 
 loop_sort:
     mov si, -1
 
-    mov di, str_len
+    mov di, dx
     dec di
     sub di, cx
 
@@ -43,12 +40,12 @@ loop_swap:
 
 next:
     inc cx
-    cmp str_len, cx
+    cmp dx, cx
     jnz loop_sort
 
 display:
     mov al, '$'
-    mov si, str_len
+    mov si, dx
     mov BYTE PTR [bx+2+si], al
 
     ; 화면 출력
