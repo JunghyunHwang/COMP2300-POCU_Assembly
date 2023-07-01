@@ -6,17 +6,17 @@ TITLE Sort
 .MODEL TINY
 
 .DATA
-buffer DB 256 DUP (?)
-str_buf DW buffer
+buffer DB 255 DUP (?)
 str_len DW ?
 
 .CODE
 .STARTUP
-    push str_buf
+    mov bx, OFFSET buffer
+    push bx
     call read_string
     add sp, 2
 
-    mov bx, str_buf
+    mov bx, OFFSET buffer
 
     mov cl, [bx+1]
     jcxz display
@@ -29,7 +29,7 @@ loop_sort:
     mov di, str_len
     dec di
     sub di, cx
-    
+
 loop_swap:
     inc si
     cmp di, si
