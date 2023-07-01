@@ -8,7 +8,7 @@ TITLE Sort
 .DATA
 buffer DB 256 DUP (?)
 str_buf DW buffer
-last_idx DW ?
+str_len DW ?
 
 .CODE
 .STARTUP
@@ -16,39 +16,40 @@ last_idx DW ?
     call read_string
     add sp, 2
 
-    mov ax, [str_buf + 1]
-    mov dx, 2
+    mov bx, str_buf
+
+    mov al, [bx+1]
+    mov str_len, ax
     mov cx, 0
 
-    mov last_idx, ax
-    add last_idx, 2
+loop_sort:
+    mov si, -1
 
-loop_bubble:
-    mov si, 2
-    mov bx, last_idx
-    dec bx
-    sub bx, cx
-
+    mov di, str_len
+    dec di
+    sub di, cx
 loop_swap:
-    mov ax, [str_buf][si]
-    cmp ax, [str_buf][si + 1]
+    inc si
+    cmp di, si
+    jz next
 
+    mov al, BYTE PTR [bx+2+si]
+
+    cmp al, BYTE PTR [bx+3+si]
     jg swap
 
-    inc si
-    cmp bx, si
-    jne loop_swap
-
-    inc dx
+next:
     inc cx
-    cmp last_idx, dx
-    jne loop_bubble
+    cmp str_len, cx
+    jnz loop_sort
 
-    mov bx, last_idx
-    mov [str_buf][bx], '$'
+    mov al, '$'
+    mov si, str_len
+    mov BYTE PTR [bx+2+si], al
 
-    mov al, 09h
-    lea dx, buffer
+    ; 화면 출력
+    mov ah, 09h
+    lea dx, [bx+2]
     int 21h
 
     ; 프로그램 종료
@@ -57,11 +58,10 @@ loop_swap:
     int 21h
 
 swap:
-    xchg ax, [str_buf][si + 1]
+    xchg al, BYTE PTR [bx+3+si]
+    xchg al, BYTE PTR [bx+2+si]
 
-    inc si
-    cmp bx, si
-    jne loop_swap
+    jmp loop_swap
 
 INCLUDE readstr.inc
 
