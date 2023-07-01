@@ -29,15 +29,17 @@ loop_sort:
     mov di, str_len
     dec di
     sub di, cx
+    
 loop_swap:
     inc si
     cmp di, si
     jz next
 
     mov al, BYTE PTR [bx+2+si]
-
     cmp al, BYTE PTR [bx+3+si]
     jg swap
+
+    jmp loop_swap
 
 next:
     inc cx
