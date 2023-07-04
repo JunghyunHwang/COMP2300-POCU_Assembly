@@ -15,10 +15,7 @@ printstr MACRO str ;(str) <ah,dx>
     int 21h
 ENDM
 
-    mov ah, 09h
-    lea dx, input_msg
-    int 21h
-
+    printstr input_msg
     printstr newline
 
     ; input file name
