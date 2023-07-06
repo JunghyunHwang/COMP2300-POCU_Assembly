@@ -1,15 +1,19 @@
 BUFSIZE EQU 255
-FILENAME EQU 20
+FILENAME EQU 13
 
 .DATA
 newline DB 0Ah,0Dh,'$'
-input_msg DB "Enter a file name$"
-typing_msg DB "Start typing$"
+input_msg DB "Enter a file name", 0Ah, 0Dh, '$'
+typing_msg DB "Start typing", 0Ah, 0Dh, '$'
+err_msg DB "Typo occurred", 0Ah, 0Dh, '$'
 
 file_name DB FILENAME
           DB FILENAME+1 DUP (?)
 buf_sen DB BUFSIZE DUP (?)
 sen_len DW ?
+
+vector DD ?
+ptr_handler DW int3_handler
 
 .CODE
 .STARTUP
@@ -29,9 +33,13 @@ readchar MACRO
     mov ah, 07h
     int 21h
 ENDM
+    mov ax, 3504h
+    int 21h
+
+    mov vector[0], bx
+    mov vector[2], es
 
     printstr input_msg
-    printstr newline
 
     ; input file name
     lea dx, file_name
@@ -39,12 +47,13 @@ ENDM
     int 21h
 
     lea bx, file_name
-    mov si, [bx+1]
-    mov BYTE PTR [bx+si], '$'
+    mov al, 0h
+    mov dl, BYTE PTR [bx+1]
+    mov si, dx
+    mov BYTE PTR [bx+2+si], al
 
     ; File open
     mov ah, 3Dh
-    mov al, 0
     lea dx, file_name[2]
     int 21h
 
@@ -61,22 +70,34 @@ ENDM
     mov BYTE PTR [bx+si], '$'
 
     printstr typing_msg
-    printstr newline
 
     printstr buf_sen
     printstr newline
 
+    mov bx, OFFSET buf_sen
     mov cx, sen_len
     mov si, -1
 loop_type:
     inc si
+
     readchar
+    mov ah, 0h
     cmp al, 0Dh
     jz exit
-    
+
+    ; Check typo
+    mov dh, 0h
+    mov dl, BYTE PTR [bx+si]
+    assert dx, ax, err_msg
+
     printchar al
 
     loop loop_type
+
+restore:
+    lea dx, vector
+    mov ax, 2503h
+    int 21h
 
 exit:
     mov ah, 4Ch
