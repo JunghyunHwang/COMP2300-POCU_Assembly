@@ -64,6 +64,7 @@ ENDM
     mov BYTE PTR [bx+2+si], al
 
     ; File open
+    mov al, 0h
     mov ah, 3Dh
     lea dx, file_name[2]
     int 21h
