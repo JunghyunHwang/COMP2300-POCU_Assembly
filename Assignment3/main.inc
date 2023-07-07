@@ -5,8 +5,7 @@ FILENAME EQU 13
 newline DB 0Dh,0Ah,'$'
 input_msg DB "Enter a file name",0Dh,0Ah,'$'
 typing_msg DB "Start typing",0Dh,0Ah,'$'
-err_msg DB "Typo!$"
-start_msg DB " Start with 'a'",0Dh,0Ah,'$'
+err_msg DB "Typo!",0Dh,0Ah,'$'
 
 file_name DB FILENAME
           DB FILENAME+1 DUP (?)
@@ -59,9 +58,9 @@ ENDM
     int 21h
 
     lea bx, file_name
-    mov al, 0h
     mov dl, BYTE PTR [bx+1]
     mov si, dx
+    mov al, 0h
     mov BYTE PTR [bx+2+si], al
 
     ; File open
@@ -102,7 +101,7 @@ loop_type:
     assert dx, ax, err_msg
 
     cmp ax, dx
-    jnz typo
+    jnz chk_loop
 
     printchar al
 
@@ -117,17 +116,3 @@ exit:
     mov ah, 4Ch
     xor al, al
     int 21h
-
-typo:
-    mov ax, cx
-    dec ax
-    cmp ax, si
-    jz chk_loop
-
-    mov al, BYTE PTR [bx+si+1]
-    lea di, start_msg
-    mov BYTE PTR [di+13], al
-
-    printstr start_msg
-
-    jmp chk_loop
