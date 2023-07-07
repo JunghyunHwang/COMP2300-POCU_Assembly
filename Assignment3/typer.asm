@@ -8,6 +8,7 @@ TITLE Typer
 .STACK 100h
 
 INCLUDE assert.mac
+INCLUDE libs.mac
 
 INCLUDE main.inc
 INCLUDE aprnt.inc

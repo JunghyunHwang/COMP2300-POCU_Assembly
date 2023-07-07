@@ -1,0 +1,16 @@
+printstr MACRO str ;(str) <ah,dx>
+    lea dx, str
+    mov ah, 09h
+    int 21h
+ENDM
+
+printchar MACRO char
+    mov dl, char
+    mov ah, 02h
+    int 21h
+ENDM
+
+readchar MACRO
+    mov ah, 07h
+    int 21h
+ENDM
