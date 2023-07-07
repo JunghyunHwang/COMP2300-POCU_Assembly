@@ -3,5 +3,8 @@ int3_handler PROC FAR
     mov ah, 09h
     int 21h
 
+    lds dx, vector
+    call dx
+
     iret
 int3_handler ENDP

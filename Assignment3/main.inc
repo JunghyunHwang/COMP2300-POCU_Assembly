@@ -5,7 +5,8 @@ FILENAME EQU 13
 newline DB 0Dh,0Ah,'$'
 input_msg DB "Enter a file name",0Dh,0Ah,'$'
 typing_msg DB "Start typing",0Dh,0Ah,'$'
-err_msg DB "Typo",0Dh,0Ah,'$'
+err_msg DB "Typo!$"
+start_msg DB " Start with 'a'",0Dh,0Ah,'$'
 
 file_name DB FILENAME
           DB FILENAME+1 DUP (?)
@@ -16,6 +17,23 @@ vector DD ?
 
 .CODE
 .STARTUP
+printstr MACRO str ;(str) <ah,dx>
+    lea dx, str
+    mov ah, 09h
+    int 21h
+ENDM
+
+printchar MACRO char
+    mov dl, char
+    mov ah, 02h
+    int 21h
+ENDM
+
+readchar MACRO
+    mov ah, 07h
+    int 21h
+ENDM
+
     ; Get interrupt
     mov ax, 3503h
     int 21h
@@ -79,13 +97,16 @@ loop_type:
     cmp al, 0Dh
     jz exit
 
-    ; Check typo
     mov dh, 00h
     mov dl, BYTE PTR [bx+si]
     assert dx, ax, err_msg
 
+    cmp ax, dx
+    jnz typo
+
     printchar al
 
+chk_loop:
     loop loop_type
 
 exit:
@@ -96,3 +117,17 @@ exit:
     mov ah, 4Ch
     xor al, al
     int 21h
+
+typo:
+    mov ax, cx
+    dec ax
+    cmp ax, si
+    jz chk_loop
+
+    mov al, BYTE PTR [bx+si+1]
+    lea di, start_msg
+    mov BYTE PTR [di+13], al
+
+    printstr start_msg
+
+    jmp chk_loop
