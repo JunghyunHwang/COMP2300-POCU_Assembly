@@ -75,6 +75,9 @@ ENDM
     mov ah, 3Fh
     int 21h
 
+    cmp ax, 0
+    jz exit
+    
     lea bx, buf_sen
     mov sen_len, ax
     mov si, sen_len
