@@ -23,9 +23,15 @@ printstr MACRO str ;(str) <ah,dx>
 ENDM
 
 printchar MACRO char
+    push ax
+    push dx
+
     mov dl, char
     mov ah, 02h
     int 21h
+
+    pop dx
+    pop ax
 ENDM
 
 readchar MACRO
@@ -100,16 +106,11 @@ loop_type:
     cmp al, 0Dh
     jz exit
 
+    printchar al
     mov dh, 00h
     mov dl, BYTE PTR [bx+si]
     assert dx, ax, err_msg
 
-    cmp ax, dx
-    jnz chk_loop
-
-    printchar al
-
-chk_loop:
     loop loop_type
 
 exit:
