@@ -10,9 +10,9 @@ start_msg DB " Start with 'a'",0Dh,0Ah,'$'
 
 file_name DB FILENAME
           DB FILENAME+1 DUP (?)
-buf_sen DB BUFSIZE DUP (?)
-sen_len DW ?
+buf_sen DB BUFSIZE+1 DUP (?)
 
+sen_len DW ?
 vector DD ?
 
 .CODE
