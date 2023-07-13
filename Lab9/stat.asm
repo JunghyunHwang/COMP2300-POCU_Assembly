@@ -12,9 +12,11 @@ input_msg DB "Enter a file name",0Dh,0Ah,'$'
 file_name DB FILENAME
           DB FILENAME+1 DUP (?)
 
-file_handle DW ?
+
 scnds_type DB ?
-scnds DD ?
+file_handle DW ?
+data_cnt DW 0
+scnds DQ ?
 
 
 .CODE
@@ -46,22 +48,41 @@ scnds DD ?
 
     mov file_handle, ax
 
-    ; Read file
+    ; Read second type
     mov bx, file_handle
     mov cx, 01h
     lea dx, scnds_type
     mov ah, 3Fh
     int 21h
 
-    ; Read file
+    finit
+    fldz
+    fwait
+
+read_loop:
+    ; Read 8 byte
     mov bx, file_handle
-    mov cx, 04h
+    mov cx, 08h
     lea dx, scnds
     mov ah, 3Fh
     int 21h
 
-    fld scnds
-    
+    cmp ax, 00h
+    jz calc_avg
+
+    fadd scnds
+    fwait
+
+    inc data_cnt
+
+    jmp read_loop
+
+calc_avg:
+    fidiv data_cnt
+    fstp scnds
+
+    fwait
+        
     mov ah, 4Ch
     xor al, al
     int 21h
