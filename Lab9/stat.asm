@@ -115,13 +115,15 @@ calc_avg:
     lea bx, float_str
 loop_itoa:
     dec si
-    jb print_str
+    jl print_str
 
     cmp si, 02h
     jz loop_itoa
 
-    mov ax, 0Ah
-    div result
+    mov dx, 00h
+    mov ax, result
+    mov cx, 0Ah
+    div cx
     mov result, ax
 
     add dl, to_alpha
