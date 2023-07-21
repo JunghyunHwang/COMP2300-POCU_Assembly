@@ -49,8 +49,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, size_t count)
             break;
         }
 
-        if (*p_end == '\0')
-        {
+        if (*p_end == '\0') {
             *p_ops++ = OP_END;
             break;
         }
@@ -65,31 +64,29 @@ void parse_rpn(const char* line, op_t* ops, double* operands, size_t count)
 
 void calculate(const op_t* op, const double* operands)
 {
-    op_t* p_ops = op;
-    double* p_operands = operands;
+    const op_t* p_ops = op;
+    const double* p_operands = operands;
 
-    while (*p_ops != OP_END)
-    {
-        switch (*p_ops)
-        {
+    while (*p_ops != OP_END) {
+        switch (*p_ops) {
         case OP_LOAD:
             eprpc_load(*p_operands);
-        break;
+            break;
         case OP_ADD:
             eprpc_add();
-        break;
+            break;
         case OP_SUB:
             eprpc_sub();
-        break;
+            break;
         case OP_MUL:
             eprpc_mul();
-        break;
+            break;
         case OP_DIV:
             eprpc_div();
-        break;
+            break;
         default:
             assert(FALSE);
-        break;
+            break;
         }
 
         ++p_operands;
