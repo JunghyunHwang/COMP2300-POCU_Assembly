@@ -54,3 +54,17 @@ void test_official(void)
 
     assert(13.963636363636363 == result);
 }
+
+void test_only_operand(void)
+{
+    double result;
+    double operands[NUM_DATA];
+    op_t ops[NUM_DATA];
+
+    parse_rpn("2.345", ops, operands, NUM_DATA);
+
+    calculate(ops, operands);
+    eprpc_get_result(&result);
+
+    assert(2.345 == result);
+}

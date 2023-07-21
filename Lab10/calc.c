@@ -21,8 +21,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, size_t count)
     double* p_operands = operands;
 
     while (TRUE) {
-        double temp = strtold(p_start, &p_end);
-        *p_operands++ = temp;
+        *p_operands++ = strtold(p_start, &p_end);
 
         switch (*p_end) {
         case '+':
@@ -42,6 +41,9 @@ void parse_rpn(const char* line, op_t* ops, double* operands, size_t count)
             ++p_end;
             break;
         case ' ':
+            *p_ops++ = OP_LOAD;
+            break;
+        case '\0':
             *p_ops++ = OP_LOAD;
             break;
         default:

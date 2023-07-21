@@ -14,5 +14,6 @@ enum {
 
 void test_official(void);
 void buildbot_test(void);
+void test_only_operand(void);
 
 #endif /* TEST_H*/
