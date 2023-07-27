@@ -5,9 +5,14 @@
 
 int main(void)
 {
-	vec4_t points[512];
+    mat4_t mat = {
+    {  1.f, 2.f,   3.f, 0.f },
+    {  5.f, 6.f,   7.f, 0.f },
+    {  9.f, 10.f, 11.f, 0.f },
+    { 13.f, 14.f, 15.f, 1.f },
+    };
 
-	size_t count = read_points(points, 512);
+    transpose(&mat);
 
 	return 0;
 }
