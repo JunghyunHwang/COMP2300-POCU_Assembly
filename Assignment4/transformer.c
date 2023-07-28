@@ -19,13 +19,13 @@ size_t read_points(vec4_t* points, const size_t count)
 {
     vec4_t* p_points = points;
     size_t number_of_points = 0;
-    
-    for (size_t i = 0; i < count; ++i) {
-        if (scanf("%f", &p_points->x) == EOF) {
+
+    while (number_of_points < count) {
+        int ret = scanf("%f%f%f", &p_points->x, &p_points->y, &p_points->z);
+
+        if (ret == 0) {
             break;
         }
-
-        scanf("%f%f", &p_points->y, &p_points->z);
 
         ++p_points;
         ++number_of_points;
