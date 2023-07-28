@@ -25,7 +25,7 @@ size_t read_points(vec4_t* points, const size_t count)
             break;
         }
 
-        scanf("%f %f", &p_points->y, &p_points->z);
+        scanf("%f%f", &p_points->y, &p_points->z);
 
         ++p_points;
         ++number_of_points;
