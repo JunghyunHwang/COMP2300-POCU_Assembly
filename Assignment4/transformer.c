@@ -85,15 +85,113 @@ void transpose(mat4_t* mat)
 
 void transform(vec4_t* dst, const vec4_t* src, const mat4_t* mat_tr)
 {
+    __asm {
+        mov eax, src
+        mov edx, mat_tr
+        xorps xmm3, xmm3
 
+        movaps xmm0, [eax]
+        movaps xmm1, [edx]
+        dpps xmm0, xmm1, 11110001b
+        orps xmm3, xmm0
+
+        movaps xmm0, [eax]
+        movaps xmm1, [edx+16]
+        dpps xmm0, xmm1, 11110010b
+        orps xmm3, xmm0
+
+        movaps xmm0, [eax]
+        movaps xmm1, [edx+32]
+        dpps xmm0, xmm1, 11110100b
+        orps xmm3, xmm0
+
+        movaps xmm0, [eax]
+        movaps xmm1, [edx+48]
+        dpps xmm0, xmm1, 11111000b
+        orps xmm3, xmm0
+
+        mov eax, dst
+        movaps [eax], xmm3
+    }
 }
 
 void concatenate(mat4_t* dst, const mat4_t* m0, const mat4_t* m1_tr)
 {
+    __asm {
+        mov esi, m0
+        mov edi, m1_tr
+        mov edx, dst
+        mov ecx, 04h
+        xor eax, eax
+        
+    loop_con:
+        xorps xmm3, xmm3
+        movaps xmm0, [esi+eax]
 
+        movaps xmm1, xmm0
+        movaps xmm2, [edi]
+        dpps xmm1, xmm2, 11110001b
+        orps xmm3, xmm1
+
+        movaps xmm1, xmm0
+        movaps xmm2, [edi+16]
+        dpps xmm1, xmm2, 11110010b
+        orps xmm3, xmm1
+
+        movaps xmm1, xmm0
+        movaps xmm2, [edi+32]
+        dpps xmm1, xmm2, 11110100b
+        orps xmm3, xmm1
+
+        movaps xmm1, xmm0
+        movaps xmm2, [edi+48]
+        dpps xmm1, xmm2, 11111000b
+        orps xmm3, xmm1
+
+        movaps [edx+eax], xmm3
+
+        add eax, 10h
+        loop loop_con
+    }
 }
 
 void run(vec4_t* world_pts, const vec4_t* local_pts, const size_t count, const vec3_t* scale, const vec3_t* rotation, const vec3_t* translation)
 {
+    mat4_t m_scale;
+    mat4_t m_rotation_x;
+    mat4_t m_rotation_y;
+    mat4_t m_rotation_z;
+    mat4_t m_translation;
+    mat4_t temp1;
+    mat4_t temp2;
+    mat4_t temp3;
+    mat4_t m_result;
+    const vec4_t* p_local = local_pts;
+    vec4_t* p_world = world_pts;
 
+    // Get transform matrix
+    mat_scale(&m_scale, scale->x, scale->y, scale->z);
+    mat_rotation_x(&m_rotation_x, rotation->x);
+    mat_rotation_y(&m_rotation_y, rotation->y);
+    mat_rotation_z(&m_rotation_z, rotation->z);
+    mat_translation(&m_translation, translation->x, translation->y, translation->z);
+
+    // Matrix * Matrix
+    transpose(&m_rotation_x);
+    concatenate(&temp1, &m_scale, &m_rotation_x);
+
+    transpose(&m_rotation_z);
+    concatenate(&temp2, &m_rotation_y, &m_rotation_z);
+
+    transpose(&temp2);
+    concatenate(&temp3, &temp1, &temp2);
+
+    transpose(&m_translation);
+    concatenate(&m_result, &temp3, &m_translation);
+
+    transpose(&m_result);
+
+    for (size_t i = 0; i < count; ++i) {
+        transform(p_world++, p_local++, &m_result);
+    }
 }
