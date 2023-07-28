@@ -23,7 +23,7 @@ size_t read_points(vec4_t* points, const size_t count)
     while (number_of_points < count) {
         int ret = scanf("%f%f%f", &p_points->x, &p_points->y, &p_points->z);
 
-        if (ret == 0) {
+        if (ret < 3) {
             break;
         }
 
