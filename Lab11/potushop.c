@@ -20,7 +20,7 @@ static vector4_t s_brightness = { 0.f, 0.f, 0.f, 0.f };
 
 const static vector4_t ZERO = { 0.f, 0.f, 0.f, 0.f };
 const static vector4_t ONE = { 1.f, 1.f, 1.f, 1.f };
-static vector4_t limits = { 1.f, 1.f, 1.f, 1.f };
+static vector4_t s_limits = { 1.f, 1.f, 1.f, 1.f };
 
 static vector4_t s_in_min = { 0.f, 0.f, 0.f, 0.f };
 static vector4_t s_out_min = { 0.f, 0.f, 0.f, 0.f };
@@ -33,16 +33,16 @@ void set_brightness_arg(int brightness)
     assert(sizeof(vector4_t) == 16);
 
     if (brightness < 0) {
-        limits = ZERO;
+        s_limits = ZERO;
     }
     else {
-        limits = ONE;
+        s_limits = ONE;
     }
 
-    float brightnessValue = brightness / 255.0;
-    s_brightness.x = brightnessValue;
-    s_brightness.y = brightnessValue;
-    s_brightness.z = brightnessValue;
+    float brightness_value = brightness / 255.0;
+    s_brightness.x = brightness_value;
+    s_brightness.y = brightness_value;
+    s_brightness.z = brightness_value;
 }
 
 void set_level_args(int in_min, int in_max, int out_min, int out_max)
@@ -131,7 +131,7 @@ void change_brightness(void)
     loop_brightness:
         movaps xmm0, [g_pixels+eax]
         addps xmm0, s_brightness
-        maxps xmm0, limits
+        maxps xmm0, s_limits
         movaps [g_pixels+eax], xmm0
 
         add eax, 10h
