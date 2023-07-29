@@ -14,11 +14,8 @@ int main(void)
     const vec3_t translation = { 2.f, 0.f, 3.f };
 
     count = read_points(local_points, MAX_POINTS);
-    assert(count <= MAX_POINTS);
-
-    run(world_points, local_points, count, &scale, &rotation, &translation);
-
-    print_csv(world_points, count);
+    
+    printf("%d", count);
 
     return 0;
 }

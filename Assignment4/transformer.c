@@ -22,6 +22,7 @@ size_t read_points(vec4_t* points, const size_t count)
 
     for (size_t i = 0; i < count; ++i) {
         vec4_t p;
+        p.w = 1.0;
 
         int ret = scanf("%f%f%f", &p.x, &p.y, &p.z);
 
