@@ -32,7 +32,7 @@ void set_brightness_arg(int brightness)
     assert(brightness >= -100 && brightness <= 100);
     assert(sizeof(vector4_t) == 16);
 
-    s_brightness = brightness / 255.0;
+    s_brightness = brightness / 255.0f;
 }
 
 void set_level_args(int in_min, int in_max, int out_min, int out_max)
@@ -44,9 +44,9 @@ void set_level_args(int in_min, int in_max, int out_min, int out_max)
     assert(out_min >= 0 && out_min <= 255);
     assert(out_max >= 0 && out_max <= 255);
 
-    s_in_min = in_min / 255.0;
-    s_in_max = in_max / 255.0;
-    s_out_min = out_min / 255.0;
+    s_in_min = in_min / 255.0f;
+    s_in_max = in_max / 255.0f;
+    s_out_min = out_min / 255.0f;
     s_rescale = (float)(out_max - out_min) / (in_max - in_min);
 }
 
