@@ -17,6 +17,7 @@ const static vector4_t SEPIA_G = { 0.349f, 0.686f, 0.168f, 0.f };
 const static vector4_t SEPIA_B = { 0.272f, 0.534f, 0.131f, 0.f };
 
 const static vector4_t ONE = { 1.f, 1.f, 1.f, 1.f };
+const static vector4_t ZERO = { 0.f, 0.f, 0.f, 0.f };
 static float s_limits;
 
 static float s_brightness;
@@ -30,13 +31,6 @@ void set_brightness_arg(int brightness)
 {
     assert(brightness >= -100 && brightness <= 100);
     assert(sizeof(vector4_t) == 16);
-
-    if (brightness < 0) {
-        s_limits = 0.0f;
-    }
-    else {
-        s_limits = 1.0f;
-    }
 
     s_brightness = brightness / 255.0;
 }
@@ -109,15 +103,14 @@ void change_brightness(void)
         mov eax, OFFSET g_pixels
 
         movss xmm1, s_brightness
-        movss xmm2, s_limits
-
         shufps xmm1, xmm1, 00h
-        shufps xmm2, xmm2, 00h
 
     loop_brightness:
         movaps xmm0, [eax]
         addps xmm0, xmm1
-        maxps xmm0, xmm2
+
+        maxps xmm0, ZERO
+        minps xmm0, ONE
 
         movaps [eax], xmm0
 
