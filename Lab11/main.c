@@ -42,21 +42,6 @@ int main(void)
 
         normalize_pixels();
 
-        set_brightness_arg(-74);
-        change_brightness();
-
-        ret = save_bitmap("darken.bmp");
-        assert(ret);
-
-        assert(compare_bitmap("data/darken_expected.bmp") == 0);
-    }
-
-    {
-        ret = load_bitmap("data/sneakers_1024.bmp");
-        assert(ret);
-
-        normalize_pixels();
-
         set_level_args(122, 211, 89, 147);
         change_levels();
 
@@ -66,6 +51,20 @@ int main(void)
         assert(compare_bitmap("data/inout_expected.bmp") == 0);
     }
 
+    {
+        ret = load_bitmap("data/sneakers_1024.bmp");
+        assert(ret);
+
+        normalize_pixels();
+
+        set_brightness_arg(-74);
+        change_brightness();
+
+        ret = save_bitmap("darken.bmp");
+        assert(ret);
+
+        assert(compare_bitmap("data/darken_expected.bmp") == 0);
+    }
 
     printf("No prob\n");
 

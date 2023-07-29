@@ -16,16 +16,15 @@ const static vector4_t SEPIA_R = { 0.393f, 0.769f, 0.189f, 0.f };
 const static vector4_t SEPIA_G = { 0.349f, 0.686f, 0.168f, 0.f };
 const static vector4_t SEPIA_B = { 0.272f, 0.534f, 0.131f, 0.f };
 
-static vector4_t s_brightness = { 0.f, 0.f, 0.f, 0.f };
-
-const static vector4_t ZERO = { 0.f, 0.f, 0.f, 0.f };
 const static vector4_t ONE = { 1.f, 1.f, 1.f, 1.f };
-static vector4_t s_limits = { 1.f, 1.f, 1.f, 1.f };
+static float s_limits;
 
-static vector4_t s_in_min = { 0.f, 0.f, 0.f, 0.f };
-static vector4_t s_out_min = { 0.f, 0.f, 0.f, 0.f };
-static vector4_t s_in_diff = { 0.f, 0.f, 0.f, 0.f };
-static vector4_t s_out_diff = { 0.f, 0.f, 0.f, 0.f };
+static float s_brightness;
+
+static float s_rescale;
+static float s_in_min;
+static float s_in_max;
+static float s_out_min;
 
 void set_brightness_arg(int brightness)
 {
@@ -33,16 +32,13 @@ void set_brightness_arg(int brightness)
     assert(sizeof(vector4_t) == 16);
 
     if (brightness < 0) {
-        s_limits = ZERO;
+        s_limits = 0.0f;
     }
     else {
-        s_limits = ONE;
+        s_limits = 1.0f;
     }
 
-    float brightness_value = brightness / 255.0;
-    s_brightness.x = brightness_value;
-    s_brightness.y = brightness_value;
-    s_brightness.z = brightness_value;
+    s_brightness = brightness / 255.0;
 }
 
 void set_level_args(int in_min, int in_max, int out_min, int out_max)
@@ -54,26 +50,10 @@ void set_level_args(int in_min, int in_max, int out_min, int out_max)
     assert(out_min >= 0 && out_min <= 255);
     assert(out_max >= 0 && out_max <= 255);
 
-    float normalization_in_min = in_min / 255.0;
-    float normalization_out_min = out_min / 255.0;
-    float in_diff = (in_max - in_min) / 255.0;
-    float out_diff = (out_max - out_min) / 255.0;
-
-    s_in_min.x = normalization_in_min;
-    s_in_min.y = normalization_in_min;
-    s_in_min.z = normalization_in_min;
-
-    s_out_min.x = normalization_out_min;
-    s_out_min.y = normalization_out_min;
-    s_out_min.z = normalization_out_min;
-
-    s_in_diff.x = in_diff;
-    s_in_diff.y = in_diff;
-    s_in_diff.z = in_diff;
-
-    s_out_diff.x = out_diff;
-    s_out_diff.y = out_diff;
-    s_out_diff.z = out_diff;
+    s_in_min = in_min / 255.0;
+    s_in_max = in_max / 255.0;
+    s_out_min = out_min / 255.0;
+    s_rescale = (float)(out_max - out_min) / (in_max - in_min);
 }
 
 void to_grayscale(void)
@@ -126,13 +106,20 @@ void change_brightness(void)
 {
     __asm {
         mov ecx, g_num_pixels
-        mov eax, 00h
+        mov eax, OFFSET g_pixels
+
+        movss xmm1, s_brightness
+        movss xmm2, s_limits
+
+        shufps xmm1, xmm1, 00h
+        shufps xmm2, xmm2, 00h
 
     loop_brightness:
-        movaps xmm0, [g_pixels+eax]
-        addps xmm0, s_brightness
-        maxps xmm0, s_limits
-        movaps [g_pixels+eax], xmm0
+        movaps xmm0, [eax]
+        addps xmm0, xmm1
+        maxps xmm0, xmm2
+
+        movaps [eax], xmm0
 
         add eax, 10h
         loop loop_brightness
@@ -143,17 +130,27 @@ void change_levels(void)
 {
     __asm {
         mov ecx, g_num_pixels
-        mov eax, 00h
+        mov eax, OFFSET g_pixels
+
+        movss xmm1, s_in_min
+        movss xmm2, s_in_max
+        movss xmm3, s_out_min
+        movss xmm4, s_rescale
+
+        shufps xmm1, xmm1, 00h
+        shufps xmm2, xmm2, 00h
+        shufps xmm3, xmm3, 00h
+        shufps xmm4, xmm4, 00h
 
     loop_levels:
-        movaps xmm0, [g_pixels+eax]
-        subps xmm0, [s_in_min]
-        maxps xmm0, [s_in_min]
-        divps xmm0, [s_in_diff]
-        mulps xmm0, [s_out_diff]
-        addps xmm0, [s_out_min]
+        movaps xmm0, [eax]
+        maxps xmm0, xmm1
+        minps xmm0, xmm2
+        subps xmm0, xmm1
+        mulps xmm0, xmm4
+        addps xmm0, xmm3
 
-        movaps [g_pixels+eax], xmm0
+        movaps [eax], xmm0
         
         add eax, 10h
         loop loop_levels
